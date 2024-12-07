@@ -31,6 +31,56 @@ export const getUserById = async (req, res) => {
 };
 
 // Create user
+// Register user
+export const Register = async (req, res) => {
+    const { name, nip, email, password, confirmPassword, role } = req.body;
+
+    const validRoles = ['admin', 'dosen', 'staff'];
+    if (!validRoles.includes(role)) {
+        return res.status(400).json({ msg: "Role tidak valid" });
+    }
+
+    if (!name || !nip || !password || !confirmPassword || !role) {
+        return res.status(400).json({ msg: "Semua bidang diperlukan" });
+    }
+
+    if (password !== confirmPassword) {
+        return res.status(400).json({ msg: "Password dan Confirm Password tidak cocok" });
+    }
+
+    try {
+        // Check if NIP is already registered in the users table
+        const existingNip = await User.findOne({ where: { nip } });
+        if (existingNip) {
+            return res.status(400).json({ msg: "NIP sudah terdaftar sebagai user" });
+        }
+
+        // Check if the email is already registered (only if email is provided)
+        if (email) {
+            const existingEmail = await User.findOne({ where: { email } });
+            if (existingEmail) {
+                return res.status(400).json({ msg: "Email sudah terdaftar" });
+            }
+        }
+
+        // Hash the password
+        const hashPassword = await argon2.hash(password);
+
+        // Create new user
+        const newUser = await User.create({
+            name,
+            nip,
+            email, // Can be null if not provided
+            password: hashPassword,
+            role
+        });
+
+        res.status(201).json({ msg: "Register Berhasil" });
+    } catch (error) {
+        res.status(400).json({ msg: error.message });
+    }
+};
+
 // Create user
 export const createUser = async (req, res) => {
     const { nip, email, password, confirmPassword, role } = req.body;

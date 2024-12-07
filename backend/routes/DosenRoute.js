@@ -5,7 +5,7 @@ import { verifyUser, adminOnly } from "../middleware/AuthUser.js";
 const router = express.Router();
 
 // Route for adding a single Dosen
-router.post('/dosens', verifyUser, adminOnly, addDosen);
+router.post('/dosens', verifyUser, addDosen);
 
 // Route for adding multiple Dosens (bulk insert)
 router.post('/dosens/bulk', verifyUser, adminOnly, addDosensBulk); 
