@@ -44,6 +44,6 @@ app.use(DosenRoute);
 // Uncomment if you want the session store to also sync tables
 // store.sync();
 
-app.listen(process.env.APP_PORT, () => {
+app.listen(process.env.PORT || 5000, () => {
     console.log('Server up and running...');
 });
