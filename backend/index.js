@@ -18,9 +18,9 @@ const store = new sessionStore({
     db: db
 });
 
-// (async () => {
-//     await db.sync(); // Ensure all models are synced, including Dosen
-// })();
+(async () => {
+    await db.sync(); // Ensure all models are synced, including Dosen
+})();
 
 app.use(session({
     secret: process.env.SESS_SECRET,
