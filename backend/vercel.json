@@ -15,6 +15,6 @@
     "buildCommand": "npm install",
     "installCommand": "npm install",
     "env": {
-        "POSTGRES_URL": "postgres://default:xxx@xxx.postgres.vercel-storage.com:5432/verceldb"
+        "DATABASE_URL": "postgres://default:xxx@xxx.postgres.vercel-storage.com:5432/verceldb"
     }
 }
