@@ -11,9 +11,10 @@ dotenv.config();
 
 const app = express();
 
-// (async () => {
-//     await db.sync(); // Ensure all models are synced, including Dosen
-// })();
+// Uncomment ini untuk sinkronisasi database
+(async () => {
+    await db.sync(); // Memastikan semua model tersinkronisasi, termasuk Dosen
+})();
 
 app.use(cors({
     credentials: true,
@@ -43,5 +44,5 @@ app.use(AuthRoute);
 app.use(DosenRoute);
 
 app.listen(process.env.PORT || 5000, () => {
-    console.log('Server up and running...');
+    console.log('Server berjalan di port ' + (process.env.PORT || 5000));
 });
