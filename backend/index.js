@@ -1,9 +1,8 @@
 import express from "express";
 import cors from "cors";
-import session from "express-session";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 import db from "./config/Database.js";
-import SequelizeStore from "connect-session-sequelize";
 import UserRoute from "./routes/UserRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
 import DosenRoute from "./routes/DosenRoute.js"
@@ -12,37 +11,36 @@ dotenv.config();
 
 const app = express();
 
-const sessionStore = SequelizeStore(session.Store);
-
-const store = new sessionStore({
-    db: db
-});
-
 (async () => {
     await db.sync(); // Ensure all models are synced, including Dosen
 })();
 
-app.use(session({
-    secret: process.env.SESS_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    store: store,
-    cookie: {
-        secure: 'auto'
-    }
-}));
-
 app.use(cors({
     credentials: true,
-    origin: 'http://localhost:3000'
+    origin: process.env.NODE_ENV === 'production' 
+        ? 'https://yourdomain.com'  // Ganti dengan domain produksi
+        : 'http://localhost:3000'
 }));
+
 app.use(express.json());
+
+// Middleware untuk verifikasi JWT
+app.use((req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (token) {
+        try {
+            const decoded = jwt.verify(token, process.env.SESS_SECRET);
+            req.user = decoded;
+        } catch (error) {
+            console.error('JWT verification failed:', error);
+        }
+    }
+    next();
+});
+
 app.use(UserRoute);
 app.use(AuthRoute);
 app.use(DosenRoute);
-
-// Uncomment if you want the session store to also sync tables
-// store.sync();
 
 app.listen(process.env.PORT || 5000, () => {
     console.log('Server up and running...');
