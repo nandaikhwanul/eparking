@@ -11,9 +11,9 @@ dotenv.config();
 
 const app = express();
 
-(async () => {
-    await db.sync(); // Ensure all models are synced, including Dosen
-})();
+// (async () => {
+//     await db.sync(); // Ensure all models are synced, including Dosen
+// })();
 
 app.use(cors({
     credentials: true,
